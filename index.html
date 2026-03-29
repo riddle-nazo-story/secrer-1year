@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>???????</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --fg: #111111;
+      --muted: rgba(17, 17, 17, 0.58);
+      --hairline: rgba(17, 17, 17, 0.10);
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "MS PMincho", serif;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(to bottom, rgba(0,0,0,0.025), transparent 18%, transparent 82%, rgba(0,0,0,0.028)),
+        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.012) 3px, transparent 4px);
+      opacity: 0.55;
+      mix-blend-mode: multiply;
+    }
+
+    .wrap {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .content {
+      position: relative;
+      width: min(92vw, 980px);
+      padding: 24px 16px;
+    }
+
+    .title {
+      margin: 0;
+      font-size: clamp(22px, 3vw, 40px);
+      letter-spacing: 0.22em;
+      font-weight: 700;
+      line-height: 1.3;
+      text-indent: 0.22em;
+    }
+
+    .timer {
+      margin-top: 28px;
+      font-variant-numeric: tabular-nums;
+      font-size: clamp(42px, 8vw, 100px);
+      line-height: 1;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      text-shadow: 0 0 0.6px rgba(0,0,0,0.35);
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .sub {
+      margin-top: 18px;
+      font-size: clamp(12px, 1.8vw, 16px);
+      letter-spacing: 0.34em;
+      color: var(--muted);
+      text-indent: 0.34em;
+    }
+
+    .thin-line {
+      width: min(360px, 45vw);
+      height: 1px;
+      margin: 24px auto 0;
+      background: linear-gradient(90deg, transparent, rgba(0,0,0,0.18), transparent);
+      opacity: 0.85;
+    }
+
+    .small-note {
+      margin-top: 18px;
+      font-size: 11px;
+      letter-spacing: 0.34em;
+      color: rgba(17, 17, 17, 0.30);
+      text-indent: 0.34em;
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      background-image:
+        radial-gradient(rgba(0, 0, 0, 0.08) 0.6px, transparent 0.7px),
+        linear-gradient(0deg, rgba(0,0,0,0.03), rgba(255,255,255,0));
+      background-size: 3px 3px, 100% 100%;
+      mix-blend-mode: multiply;
+    }
+
+    .scan {
+      position: fixed;
+      inset: -20% 0 auto 0;
+      height: 18%;
+      pointer-events: none;
+      background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.055), transparent);
+      transform: translateY(-140%);
+      opacity: 0;
+    }
+
+    .glitch {
+      animation: glitch 220ms steps(2, end) 1;
+    }
+
+    .flicker {
+      animation: flicker 120ms steps(2, end) 1;
+    }
+
+    @keyframes glitch {
+      0%   { transform: translate(0, 0) skewX(0deg); }
+      20%  { transform: translate(-3px, 1px) skewX(-4deg); }
+      40%  { transform: translate(3px, -1px) skewX(5deg); }
+      60%  { transform: translate(-2px, 0px) skewX(-3deg); }
+      80%  { transform: translate(2px, 1px) skewX(2deg); }
+      100% { transform: translate(0, 0) skewX(0deg); }
+    }
+
+    @keyframes flicker {
+      0% { opacity: 1; }
+      50% { opacity: 0.42; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes scanMove {
+      0% { transform: translateY(-140%); opacity: 0; }
+      10% { opacity: 1; }
+      50% { opacity: 0.75; }
+      100% { transform: translateY(680%); opacity: 0; }
+    }
+
+    .micro {
+      position: absolute;
+      inset: auto 0 0 0;
+      margin-top: 22px;
+      font-size: 12px;
+      letter-spacing: 0.22em;
+      color: rgba(17, 17, 17, 0.16);
+      user-select: none;
+      transform: translateY(10px);
+    }
+
+    @media (max-width: 560px) {
+      .title { letter-spacing: 0.16em; text-indent: 0.16em; }
+      .timer { white-space: normal; line-height: 1.08; }
+      .sub, .small-note { letter-spacing: 0.24em; }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise" id="noise"></div>
+  <div class="scan" id="scan"></div>
+
+  <main class="wrap">
+    <section class="content" id="panel" aria-label="カウントダウンサイト">
+      <h1 class="title" id="title">詳細情報解禁まで</h1>
+      <div class="thin-line"></div>
+      <div class="timer" id="timer">--:--:--:--</div>
+      <div class="sub">?繝ｪ繝ｼ荳?蜻ｨ蟷ｴ險伜ｿｵ</div>
+      <div class="small-note">縺溘☆縺代※縲√□繧後°縲√ｏ縺溘＠繧</div>
+      <div class="micro">　</div>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const target = new Date('2026-04-13T00:00:00+09:00');
+      const timer = document.getElementById('timer');
+      const panel = document.getElementById('panel');
+      const title = document.getElementById('title');
+      const noise = document.getElementById('noise');
+      const scan = document.getElementById('scan');
+
+      const pad = (n) => String(n).padStart(2, '0');
+
+      function update() {
+        const now = new Date();
+        let diff = target - now;
+        if (diff < 0) diff = 0;
+
+        const sec = Math.floor(diff / 1000);
+        const days = Math.floor(sec / 86400);
+        const hours = Math.floor((sec % 86400) / 3600);
+        const mins = Math.floor((sec % 3600) / 60);
+        const secs = sec % 60;
+
+        timer.textContent = `${pad(days)}:${pad(hours)}:${pad(mins)}:${pad(secs)}`;
+
+        if (Math.random() < 0.10) {
+          panel.classList.add('glitch');
+          title.classList.add('flicker');
+          setTimeout(() => panel.classList.remove('glitch'), 240);
+          setTimeout(() => title.classList.remove('flicker'), 160);
+        }
+      }
+
+      function noiseBurst() {
+        if (Math.random() < 0.24) {
+          noise.style.opacity = (0.08 + Math.random() * 0.12).toFixed(2);
+          scan.style.animation = 'scanMove 540ms linear 1';
+          scan.style.opacity = '1';
+          setTimeout(() => {
+            noise.style.opacity = '0';
+            scan.style.opacity = '0';
+            scan.style.animation = 'none';
+          }, 560);
+        }
+      }
+
+      update();
+      setInterval(update, 1000);
+      setInterval(noiseBurst, 1500);
+
+      setInterval(() => {
+        if (Math.random() < 0.14) {
+          const x = (Math.random() * 2 - 1).toFixed(2);
+          const y = (Math.random() * 2 - 1).toFixed(2);
+          panel.style.transform = `translate(${x}px, ${y}px)`;
+          setTimeout(() => { panel.style.transform = 'translate(0,0)'; }, 110);
+        }
+      }, 2200);
+    })();
+  </script>
+</body>
+</html>
